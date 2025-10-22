@@ -367,8 +367,59 @@
         
         /* Styles pour l'impression */
 
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    
+    #invoice-print, #invoice-print * {
+        visibility: visible;
+    }
+    
+    #invoice-print {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 20px;
+    }
+}
 
 
+/* Styles spécifiques pour le conteneur d'impression A4 */
+#invoice-print {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    background: white !important;
+    margin: 0 auto;
+    padding: 15mm;
+    box-sizing: border-box;
+    display: none;
+}
+
+#invoice-print .invoice-preview {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Ajustements pour le contenu A4 */
+#invoice-print .company-info h1 {
+    font-size: 18pt !important;
+}
+
+#invoice-print .document-info h2 {
+    font-size: 16pt !important;
+}
+
+#invoice-print .items-table {
+    font-size: 10pt !important;
+}
+
+#invoice-print .total-row.final {
+    font-size: 12pt !important;
+}
 
         @media print {
             body {
@@ -670,7 +721,24 @@
         }
 
 
-
+@media (max-width: 768px) {
+    #invoice-print {
+        padding: 10mm !important;
+    }
+    
+    #invoice-print .company-info h1 {
+        font-size: 16pt !important;
+    }
+    
+    #invoice-print .items-table {
+        font-size: 8pt !important;
+    }
+    
+    #invoice-print .items-table th,
+    #invoice-print .items-table td {
+        padding: 4px 6px !important;
+    }
+}
     </style>
 </head>
 <body>
@@ -1874,7 +1942,7 @@
         }
 
         // Générer un PDF
-        function generatePDF() {
+       /* function generatePDF() {
             // Utiliser html2canvas pour capturer la facture
             html2canvas(document.getElementById('invoice-preview')).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
@@ -1902,8 +1970,54 @@
                 showNotification('PDF généré avec succès!', 'success');
             });
         }
+*/
 
 
+
+
+function generatePDF() {
+    updatePrintContainer();
+    
+    // Forcer l'affichage temporaire pour la capture
+    const printContainer = document.getElementById('invoice-print');
+    const originalDisplay = printContainer.style.display;
+    printContainer.style.display = 'block';
+    printContainer.style.position = 'absolute';
+    printContainer.style.left = '0';
+    printContainer.style.top = '0';
+    printContainer.style.zIndex = '9999';
+    
+    setTimeout(() => {
+        html2canvas(printContainer, {
+            scale: 2, // Augmente la qualité
+            useCORS: true,
+            logging: false,
+            width: 794, // 210mm en pixels (210 * 3.78)
+            height: 1123, // 297mm en pixels (297 * 3.78)
+            windowWidth: 794,
+            windowHeight: 1123
+        }).then(canvas => {
+            // Restaurer l'affichage original
+            printContainer.style.display = originalDisplay;
+            printContainer.style.position = '';
+            printContainer.style.left = '';
+            printContainer.style.top = '';
+            printContainer.style.zIndex = '';
+            
+            const imgData = canvas.toDataURL('image/png');
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            
+            // Dimensions A4 exactes
+            const imgWidth = 210;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            
+            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+            pdf.save(`${documentType.value}-${new Date().toISOString().slice(0, 10)}.pdf`);
+            showNotification('PDF généré avec succès!', 'success');
+        });
+    }, 500);
+}
 
         
 
