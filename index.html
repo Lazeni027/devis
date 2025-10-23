@@ -4,1091 +4,442 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nova Startup - Système de Facturation Pro</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- CSS personnalisé -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Bibliothèques externes -->
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <style>
-        :root {
-            --primary-color: #1a5276;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --light-color: #f8f9fa;
-            --dark-color: #2c3e50;
-            --success-color: #28a745;
-            --warning-color: #ffc107;
-            --info-color: #17a2b8;
-        }
-        
-        * {
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #1a5276 0%, #3498db 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        
-        .login-container {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 400px;
-            padding: 30px;
-            text-align: center;
-        }
-        
-        .logo {
-            margin-bottom: 20px;
-        }
-        
-        .logo h1 {
-            color: var(--primary-color);
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-        
-        .logo p {
-            color: var(--dark-color);
-            font-size: 12px;
-        }
-        
-        .login-form {
-            margin-top: 20px;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: var(--dark-color);
-        }
-        
-        input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        
-        input:focus, select:focus, textarea:focus {
-            border-color: var(--secondary-color);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-        
-        button {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-            font-size: 16px;
-            width: 100%;
-        }
-        
-        .btn-primary {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background-color: #2980b9;
-        }
-        
-        .btn-success {
-            background-color: var(--success-color);
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background-color: #218838;
-        }
-        
-        .btn-danger {
-            background-color: var(--accent-color);
-            color: white;
-        }
-        
-        .btn-danger:hover {
-            background-color: #c0392b;
-        }
-        
-        .btn-warning {
-            background-color: var(--warning-color);
-            color: var(--dark-color);
-        }
-        
-        .btn-warning:hover {
-            background-color: #e0a800;
-        }
-        
-        .btn-info {
-            background-color: var(--info-color);
-            color: white;
-        }
-        
-        .btn-info:hover {
-            background-color: #138496;
-        }
-        
-        .app-container {
-            display: none;
-            width: 100%;
-            max-width: 1400px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-        
-        .app-header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .app-header h1 {
-            font-size: 20px;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .app-content {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 0;
-            min-height: 80vh;
-        }
-        
-        @media (max-width: 1024px) {
-            .app-content {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .form-section, .preview-section {
-            padding: 25px;
-            overflow-y: auto;
-            max-height: 80vh;
-        }
-        
-        .form-section {
-            background-color: var(--light-color);
-            border-right: 1px solid #ddd;
-        }
-        
-        .section-title {
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--secondary-color);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            font-size: 18px;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        .actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .actions button {
-            width: auto;
-            flex: 1;
-        }
-        
-        /* Styles pour la prévisualisation de la facture */
-        .invoice-preview {
-            background: white;
-            padding: 30px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            border-radius: 5px;
-            min-height: 100%;
-        }
-        
-        .invoice-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 30px;
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 20px;
-        }
-        
-        .company-info h1 {
-            color: var(--primary-color);
-            margin: 0 0 10px 0;
-            font-size: 24px;
-        }
-        
-        .company-info p {
-            margin: 5px 0;
-            font-size: 14px;
-        }
-        
-        .document-info {
-            text-align: right;
-        }
-        
-        .document-info h2 {
-            color: var(--secondary-color);
-            margin: 0 0 10px 0;
-            font-size: 20px;
-        }
-        
-        .document-info p {
-            margin: 5px 0;
-            font-size: 14px;
-        }
-        
-        .invoice-section {
-            margin-bottom: 25px;
-        }
-        
-        .invoice-section-title {
-            background-color: var(--light-color);
-            padding: 8px 15px;
-            margin-bottom: 15px;
-            border-left: 4px solid var(--secondary-color);
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-        
-        .items-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        
-        .items-table th {
-            background-color: var(--secondary-color);
-            color: white;
-            text-align: left;
-            padding: 12px 15px;
-            font-weight: 600;
-        }
-        
-        .items-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        .items-table tr:last-child td {
-            border-bottom: none;
-        }
-        
-        .items-table .description {
-            width: 50%;
-        }
-        
-        .items-table .quantity, 
-        .items-table .unit-price, 
-        .items-table .total {
-            width: 15%;
-            text-align: right;
-        }
-        
-        .totals {
-            width: 300px;
-            margin-left: auto;
-            margin-top: 20px;
-        }
-        
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        .total-row.final {
-            font-weight: bold;
-            font-size: 18px;
-            border-bottom: 2px solid var(--primary-color);
-            color: var(--primary-color);
-        }
-        
-        .conditions {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px dashed #ccc;
-        }
-        
-        .conditions p {
-            margin: 8px 0;
-            font-size: 14px;
-        }
-        
-        .signature-area {
-            margin-top: 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .qr-code {
-            width: 120px;
-            height: 120px;
-            border: 1px solid #ddd;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            text-align: center;
-            padding: 5px;
-        }
-        
-        /* Styles pour l'impression */
-
-@media print {
-    body * {
-        visibility: hidden;
-    }
-    
-    #invoice-print, #invoice-print * {
-        visibility: visible;
-    }
-    
-    #invoice-print {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        padding: 20px;
-    }
-}
-
-
-/* Styles spécifiques pour le conteneur d'impression A4 */
-#invoice-print {
-    width: 210mm !important;
-    min-height: 297mm !important;
-    background: white !important;
-    margin: 0 auto;
-    padding: 15mm;
-    box-sizing: border-box;
-    display: none;
-}
-
-#invoice-print .invoice-preview {
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    box-shadow: none !important;
-}
-
-/* Ajustements pour le contenu A4 */
-#invoice-print .company-info h1 {
-    font-size: 18pt !important;
-}
-
-#invoice-print .document-info h2 {
-    font-size: 16pt !important;
-}
-
-#invoice-print .items-table {
-    font-size: 10pt !important;
-}
-
-#invoice-print .total-row.final {
-    font-size: 12pt !important;
-}
-
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-            
-            .login-container, .form-section, .actions, .app-header {
-                display: none;
-            }
-            
-            .app-container {
-                display: block;
-                box-shadow: none;
-                max-width: 100%;
-            }
-            
-            .app-content {
-                display: block;
-            }
-            
-            .invoice-preview {
-                box-shadow: none;
-                padding: 0;
-            }
-        }
-        
-        /* Styles pour les produits */
-        .product-item {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr auto;
-            gap: 10px;
-            margin-bottom: 10px;
-            align-items: center;
-            padding: 10px;
-            background: white;
-            border-radius: 4px;
-            border: 1px solid #eee;
-        }
-        
-        .products-list {
-            margin-bottom: 20px;
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 4px;
-            background: #f9f9f9;
-        }
-        
-        .empty-products {
-            text-align: center;
-            color: #777;
-            padding: 20px;
-        }
-        
-        .payment-section {
-            background: #e8f4fc;
-            padding: 15px;
-            border-radius: 5px;
-            margin-top: 20px;
-        }
-        
-        .payment-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        
-        .payment-option {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .error-message {
-            color: var(--accent-color);
-            font-size: 14px;
-            margin-top: 5px;
-            display: none;
-        }
-        
-        .logout-btn {
-            background: transparent;
-            border: 1px solid white;
-            color: white;
-            padding: 5px 10px;
-            font-size: 14px;
-            width: auto;
-        }
-        
-        .logout-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .dashboard-section {
-            display: none;
-            padding: 20px;
-        }
-        
-        .dashboard-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .stat-card {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin: 10px 0;
-        }
-        
-        .stat-label {
-            color: var(--dark-color);
-            font-size: 0.9rem;
-        }
-        
-        .recent-documents {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .documents-list {
-            margin-top: 15px;
-        }
-        
-        .document-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .document-item:last-child {
-            border-bottom: none;
-        }
-        
-        .nav-tabs {
-            display: flex;
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 20px;
-        }
-        
-        .nav-tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-        }
-        
-        .nav-tab.active {
-            border-bottom-color: var(--secondary-color);
-            color: var(--secondary-color);
-            font-weight: bold;
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .client-management {
-            margin-top: 20px;
-        }
-        
-        .client-list {
-            margin-top: 15px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        
-        .client-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .client-item:last-child {
-            border-bottom: none;
-        }
-        
-        .template-management {
-            margin-top: 20px;
-        }
-        
-        .template-list {
-            margin-top: 15px;
-        }
-        
-        .template-item {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-        
-        .template-item:hover {
-            background: #f0f0f0;
-        }
-        
-        .settings-section {
-            padding: 20px;
-        }
-        
-        .settings-group {
-            margin-bottom: 25px;
-        }
-        
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-        
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
-        }
-        
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        
-        input:checked + .slider {
-            background-color: var(--success-color);
-        }
-        
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-        
-        .backup-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            border-radius: 5px;
-            color: white;
-            z-index: 1000;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-            display: none;
-        }
-        
-        .notification.success {
-            background-color: var(--success-color);
-        }
-        
-        .notification.error {
-            background-color: var(--accent-color);
-        }
-        
-        .notification.info {
-            background-color: var(--info-color);
-        }
-
-
-@media (max-width: 768px) {
-    #invoice-print {
-        padding: 10mm !important;
-    }
-    
-    #invoice-print .company-info h1 {
-        font-size: 16pt !important;
-    }
-    
-    #invoice-print .items-table {
-        font-size: 8pt !important;
-    }
-    
-    #invoice-print .items-table th,
-    #invoice-print .items-table td {
-        padding: 4px 6px !important;
-    }
-}
-    </style>
 </head>
 <body>
     <!-- Écran de connexion -->
     <div class="login-container" id="login-container">
-        <div class="logo">
-            <h1>NOVA STARTUP TECHNOLOGIE ci</h1>
-            <p>Côte d'Ivoire - Système de Gestion NSTCI</p>
-        </div>
-        <div class="login-form">
-            <div class="form-group">
-                <label for="username">Nom d'utilisateur</label>
-                <input type="text" id="username" placeholder="Entrez votre nom d'utilisateur">
+        <div class="card shadow">
+            <div class="card-body p-4">
+                <div class="logo text-center mb-4">
+                    <h1 class="h4 fw-bold text-primary">NOVA STARTUP TECHNOLOGIE CI</h1>
+                    <p class="text-muted small">Côte d'Ivoire - Système de Gestion NSTCI</p>
+                </div>
+                <div class="login-form">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Nom d'utilisateur</label>
+                        <input type="text" class="form-control" id="username" placeholder="Entrez votre nom d'utilisateur">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mot de passe</label>
+                        <input type="password" class="form-control" id="password" placeholder="Entrez votre mot de passe">
+                        <div class="error-message" id="login-error">Identifiants incorrects. Veuillez réessayer.</div>
+                    </div>
+                    <button id="login-btn" class="btn btn-primary w-100">Se Connecter</button>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="password">Mot de passe</label>
-                <input type="password" id="password" placeholder="Entrez votre mot de passe">
-                <div class="error-message" id="login-error">Identifiants incorrects. Veuillez réessayer.</div>
-            </div>
-            <button id="login-btn" class="btn-primary">Se Connecter</button>
         </div>
     </div>
 
     <!-- Application principale -->
-    <div class="app-container" id="app-container">
-        <div class="app-header">
-            <h1>NOVA STARTUP TECHNOLOGIE CI- Système de Facturation Pro</h1>
-            <div class="user-info">
-                <span id="user-display">Administrateur</span>
-                <button class="logout-btn" id="logout-btn">Déconnexion</button>
+    <div class="app-container container-fluid p-0" id="app-container">
+        <!-- En-tête de l'application -->
+        <nav class="navbar navbar-dark bg-primary">
+            <div class="container-fluid">
+                <span class="navbar-brand mb-0 h1">NOVA STARTUP TECHNOLOGIE CI - Système de Facturation Pro</span>
+                <div class="d-flex">
+                    <span id="user-display" class="navbar-text me-3">Administrateur</span>
+                    <button class="btn btn-outline-light btn-sm" id="logout-btn">Déconnexion</button>
+                </div>
             </div>
-        </div>
+        </nav>
         
         <!-- Navigation par onglets -->
-        <div class="nav-tabs">
-            <div class="nav-tab active" data-tab="dashboard">Tableau de Bord</div>
-            <div class="nav-tab" data-tab="invoice">Créer un Document</div>
-            <div class="nav-tab" data-tab="clients">Gestion Clients</div>
-            <div class="nav-tab" data-tab="templates">Modèles</div>
-            <div class="nav-tab" data-tab="settings">Paramètres</div>
-        </div>
+        <ul class="nav nav-tabs" id="mainTabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#dashboard">Tableau de Bord</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#invoice">Créer un Document</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#clients">Gestion Clients</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#templates">Modèles</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#settings">Paramètres</a>
+            </li>
+        </ul>
         
-        <!-- Tableau de bord -->
-        <div class="tab-content active" id="dashboard">
-            <div class="dashboard-section">
-                <h2 class="section-title">Tableau de Bord</h2>
+        <!-- Contenu des onglets -->
+        <div class="tab-content p-3" id="mainTabContent">
+            <!-- Tableau de bord -->
+            <div class="tab-pane fade show active" id="dashboard">
+                <h2 class="section-title mb-4">Tableau de Bord</h2>
                 
-                <div class="dashboard-stats">
-                    <div class="stat-card">
-                        <div class="stat-label">Documents ce mois</div>
-                        <div class="stat-value" id="month-docs">0</div>
+                <div class="row mb-4">
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="stat-card card h-100">
+                            <div class="card-body text-center">
+                                <div class="stat-label text-muted">Documents ce mois</div>
+                                <div class="stat-value text-primary" id="month-docs">0</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Chiffre d'affaires</div>
-                        <div class="stat-value" id="month-revenue">0 FCFA</div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="stat-card card h-100">
+                            <div class="card-body text-center">
+                                <div class="stat-label text-muted">Chiffre d'affaires</div>
+                                <div class="stat-value text-primary" id="month-revenue">0 FCFA</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Clients actifs</div>
-                        <div class="stat-value" id="active-clients">0</div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="stat-card card h-100">
+                            <div class="card-body text-center">
+                                <div class="stat-label text-muted">Clients actifs</div>
+                                <div class="stat-value text-primary" id="active-clients">0</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Taux de conversion</div>
-                        <div class="stat-value" id="conversion-rate">0%</div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="stat-card card h-100">
+                            <div class="card-body text-center">
+                                <div class="stat-label text-muted">Taux de conversion</div>
+                                <div class="stat-value text-primary" id="conversion-rate">0%</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="recent-documents">
-                    <h3 class="section-title">Documents Récents</h3>
-                    <div class="documents-list" id="recent-documents">
-                        <!-- Liste des documents récents -->
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="section-title mb-3">Documents Récents</h3>
+                        <div class="documents-list" id="recent-documents">
+                            <p class="text-muted text-center">Aucun document récent</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Création de documents -->
-        <div class="tab-content" id="invoice">
-            <div class="app-content">
-                <!-- Section de formulaire -->
-                <div class="form-section">
-                    <h2 class="section-title">Configuration du Document</h2>
-                    
-                    <div class="form-group">
-                        <label for="document-type">Type de document</label>
-                        <select id="document-type">
-                            <option value="devis">Devis</option>
-                            <option value="facture">Facture</option>
-                            <option value="paiement">Paiement/Versement</option>
-                            <option value="acompte">Acompte</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="client-select">Sélectionner un client</label>
-                        <select id="client-select">
-                            <option value="">-- Nouveau client --</option>
-                        </select>
-                    </div>
-                    
-                    <div id="payment-section" class="payment-section" style="display: none;">
-                        <h3 class="section-title">Informations de Paiement</h3>
-                        <div class="form-group">
-                            <label for="payment-ref">Référence du Paiement</label>
-                            <input type="text" id="payment-ref" placeholder="Réf. du paiement ou versement">
-                        </div>
-                        <div class="form-group">
-                            <label for="payment-method">Mode de Paiement</label>
-                            <div class="payment-options">
-                                <div class="payment-option">
-                                    <input type="radio" id="cash" name="payment-method" value="Espèces">
-                                    <label for="cash">Espèces</label>
+            
+            <!-- Création de documents -->
+            <div class="tab-pane fade" id="invoice">
+                <div class="row">
+                    <!-- Section de formulaire -->
+                    <div class="col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h2 class="section-title mb-4">Configuration du Document</h2>
+                                
+                                <div class="mb-3">
+                                    <label for="document-type" class="form-label">Type de document</label>
+                                    <select class="form-select" id="document-type">
+                                        <option value="devis">Devis</option>
+                                        <option value="facture">Facture</option>
+                                        <option value="paiement">Paiement/Versement</option>
+                                        <option value="acompte">Acompte</option>
+                                    </select>
                                 </div>
-                                <div class="payment-option">
-                                    <input type="radio" id="transfer" name="payment-method" value="Virement" checked>
-                                    <label for="transfer">Virement</label>
+                                
+                                <div class="mb-3">
+                                    <label for="client-select" class="form-label">Sélectionner un client</label>
+                                    <select class="form-select" id="client-select">
+                                        <option value="">-- Nouveau client --</option>
+                                    </select>
                                 </div>
-                                <div class="payment-option">
-                                    <input type="radio" id="check" name="payment-method" value="Chèque">
-                                    <label for="check">Chèque</label>
+                                
+                                <div id="payment-section" class="payment-section card bg-light p-3 mb-3" style="display: none;">
+                                    <h3 class="section-title mb-3">Informations de Paiement</h3>
+                                    <div class="mb-3">
+                                        <label for="payment-ref" class="form-label">Référence du Paiement</label>
+                                        <input type="text" class="form-control" id="payment-ref" placeholder="Réf. du paiement ou versement">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Mode de Paiement</label>
+                                        <div class="payment-options">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" id="cash" name="payment-method" value="Espèces">
+                                                <label class="form-check-label" for="cash">Espèces</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" id="transfer" name="payment-method" value="Virement" checked>
+                                                <label class="form-check-label" for="transfer">Virement</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" id="check" name="payment-method" value="Chèque">
+                                                <label class="form-check-label" for="check">Chèque</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" id="mobile" name="payment-method" value="Mobile Money">
+                                                <label class="form-check-label" for="mobile">Mobile Money</label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="payment-option">
-                                    <input type="radio" id="mobile" name="payment-method" value="Mobile Money">
-                                    <label for="mobile">Mobile Money</label>
+                                
+                                <h3 class="section-title mb-3">Informations du Client</h3>
+                                
+                                <div class="mb-3">
+                                    <label for="client-name" class="form-label">Nom/Raison sociale</label>
+                                    <input type="text" class="form-control" id="client-name" placeholder="Nom du client">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="client-address" class="form-label">Adresse</label>
+                                    <input type="text" class="form-control" id="client-address" placeholder="Adresse du client">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="client-phone" class="form-label">Téléphone</label>
+                                    <input type="text" class="form-control" id="client-phone" placeholder="Téléphone du client">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="client-email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="client-email" placeholder="Email du client">
+                                </div>
+                                
+                                <h3 class="section-title mb-3">Produits et Services</h3>
+                                
+                                <div class="mb-3">
+                                    <label for="product-reference" class="form-label">Référence</label>
+                                    <input type="text" class="form-control" id="product-reference" placeholder="Ex: CAM-001">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="product-description" class="form-label">Désignation</label>
+                                    <textarea class="form-control" id="product-description" rows="3" placeholder="Description détaillée du produit/service"></textarea>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-4">
+                                        <label for="product-quantity" class="form-label">Quantité</label>
+                                        <input type="number" class="form-control" id="product-quantity" value="1" min="1">
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="product-price" class="form-label">Prix Unitaire (FCFA)</label>
+                                        <input type="number" class="form-control" id="product-price" step="100" min="0" value="0">
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="product-tva" class="form-label">TVA (%)</label>
+                                        <select class="form-select" id="product-tva">
+                                            <option value="0">0%</option>
+                                            <option value="18" selected>18%</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <button id="add-product" class="btn btn-primary w-100 mb-3">Ajouter le Produit</button>
+                                
+                                <div class="products-list card" id="products-list">
+                                    <div class="card-body">
+                                        <div class="empty-products text-center text-muted">Aucun produit ajouté</div>
+                                    </div>
+                                </div>
+                                
+                                <h3 class="section-title mb-3 mt-4">Conditions</h3>
+                                
+                                <div class="mb-3">
+                                    <label for="validity" class="form-label">Validité de l'offre (jours)</label>
+                                    <input type="number" class="form-control" id="validity" value="30">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="delivery-time" class="form-label">Délai de livraison/installation</label>
+                                    <input type="text" class="form-control" id="delivery-time" value="Sous 7 jours ouvrables">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="payment-terms" class="form-label">Conditions de paiement</label>
+                                    <input type="text" class="form-control" id="payment-terms" value="70% à la commande, solde à la livraison">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="warranty" class="form-label">Garantie</label>
+                                    <input type="text" class="form-control" id="warranty" value="3 mois pièces et main d'œuvre">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="qr-data" class="form-label">Information pour QR Code</label>
+                                    <input type="text" class="form-control" id="qr-data" value="NOVA STARTUP - 0554101873 - www.nstcisecure.netlify.app">
+                                </div>
+                                
+                                <div class="actions d-grid gap-2 d-md-flex">
+                                    <button id="save-btn" class="btn btn-success flex-fill">Enregistrer</button>
+                                    <button id="reset-btn" class="btn btn-danger flex-fill">Réinitialiser</button>
+                                    <!-- <button id="print-btn" class="btn btn-primary flex-fill">Imprimer</button> -->
+                                    <button id="pdf-btn" class="btn btn-info flex-fill">Générer PDF</button>
+                                    <button id="new-doc-btn" class="btn btn-warning flex-fill">Nouveau Document</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <h3 class="section-title">Informations du Client</h3>
-                    
-                    <div class="form-group">
-                        <label for="client-name">Nom/Raison sociale</label>
-                        <input type="text" id="client-name" placeholder="Nom du client">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="client-address">Adresse</label>
-                        <input type="text" id="client-address" placeholder="Adresse du client">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="client-phone">Téléphone</label>
-                        <input type="text" id="client-phone" placeholder="Téléphone du client">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="client-email">Email</label>
-                        <input type="email" id="client-email" placeholder="Email du client">
-                    </div>
-                    
-                    <h3 class="section-title">Produits et Services</h3>
-                    
-                    <div class="form-group">
-                        <label for="product-reference">Référence</label>
-                        <input type="text" id="product-reference" placeholder="Ex: CAM-001">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="product-description">Désignation</label>
-                        <textarea id="product-description" rows="3" placeholder="Description détaillée du produit/service"></textarea>
-                    </div>
-                    
-                    <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
-                        <div>
-                            <label for="product-quantity">Quantité</label>
-                            <input type="number" id="product-quantity" value="1" min="1">
+                    <!-- Section de prévisualisation -->
+                    <div class="col-lg-8">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="invoice-preview" id="invoice-preview">
+                                    <!-- Le contenu de la facture sera généré ici par JavaScript -->
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <label for="product-price">Prix Unitaire (FCFA)</label>
-                            <input type="number" id="product-price" step="100" min="0" value="0">
-                        </div>
-                        <div>
-                            <label for="product-tva">TVA (%)</label>
-                            <select id="product-tva">
-                                <option value="0">0%</option>
-                                <option value="18" selected>18%</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <button id="add-product" class="btn-primary">Ajouter le Produit</button>
-                    
-                    <div class="products-list" id="products-list">
-                        <div class="empty-products">Aucun produit ajouté</div>
-                    </div>
-                    
-                    <h3 class="section-title">Conditions</h3>
-                    
-                    <div class="form-group">
-                        <label for="validity">Validité de l'offre (jours)</label>
-                        <input type="number" id="validity" value="30">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="delivery-time">Délai de livraison/installation</label>
-                        <input type="text" id="delivery-time" value="Sous 15 jours ouvrables">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="payment-terms">Conditions de paiement</label>
-                        <input type="text" id="payment-terms" value="30% à la commande, solde à la livraison">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="warranty">Garantie</label>
-                        <input type="text" id="warranty" value="12 mois pièces et main d'œuvre">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="qr-data">Information pour QR Code</label>
-                        <input type="text" id="qr-data" value="NOVA STARTUP - 0554101873 - www.novastartup.ci">
-                    </div>
-                    
-                    <div class="actions">
-                        <button id="save-btn" class="btn-success">Enregistrer</button>
-                        <button id="reset-btn" class="btn-danger">Réinitialiser</button>
-                        <button id="print-btn" class="btn-primary">Imprimer</button>
-                        <button id="pdf-btn" class="btn-info">Générer PDF</button>
-                        <button id="new-doc-btn" class="btn-warning">Nouveau Document</button>
-                    </div>
-                </div>
-                
-                <!-- Section de prévisualisation -->
-                <div class="preview-section">
-                    <div class="invoice-preview" id="invoice-preview">
-                        <!-- Le contenu de la facture sera généré ici par JavaScript -->
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Gestion des clients -->
-        <div class="tab-content" id="clients">
-            <div class="dashboard-section">
-                <h2 class="section-title">Gestion des Clients</h2>
-                
-                <div class="client-management">
-                    <div class="form-group">
-                        <label for="new-client-name">Nom du client</label>
-                        <input type="text" id="new-client-name" placeholder="Nom ou raison sociale">
-                    </div>
-                    <div class="form-group">
-                        <label for="new-client-contact">Contact</label>
-                        <input type="text" id="new-client-contact" placeholder="Personne à contacter">
-                    </div>
-                    <div class="form-group">
-                        <label for="new-client-address">Adresse</label>
-                        <input type="text" id="new-client-address" placeholder="Adresse complète">
-                    </div>
-                    <div class="form-group">
-                        <label for="new-client-phone">Téléphone</label>
-                        <input type="text" id="new-client-phone" placeholder="Numéro de téléphone">
-                    </div>
-                    <div class="form-group">
-                        <label for="new-client-email">Email</label>
-                        <input type="email" id="new-client-email" placeholder="Adresse email">
-                    </div>
-                    <button id="add-client" class="btn-primary">Ajouter le Client</button>
-                    
-                    <div class="client-list" id="client-list">
-                        <!-- Liste des clients -->
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Modèles de documents -->
-        <div class="tab-content" id="templates">
-            <div class="dashboard-section">
-                <h2 class="section-title">Modèles de Documents</h2>
-                
-                <div class="template-management">
-                    <div class="form-group">
-                        <label for="template-name">Nom du modèle</label>
-                        <input type="text" id="template-name" placeholder="Nom du modèle">
-                    </div>
-                    <button id="save-template" class="btn-primary">Sauvegarder comme modèle</button>
-                    
-                    <div class="template-list" id="template-list">
-                        <!-- Liste des modèles -->
+            
+            <!-- Gestion des clients -->
+            <div class="tab-pane fade" id="clients">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="section-title mb-4">Gestion des Clients</h2>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="new-client-name" class="form-label">Nom du client</label>
+                                    <input type="text" class="form-control" id="new-client-name" placeholder="Nom ou raison sociale">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="new-client-contact" class="form-label">Contact</label>
+                                    <input type="text" class="form-control" id="new-client-contact" placeholder="Personne à contacter">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="new-client-address" class="form-label">Adresse</label>
+                                    <input type="text" class="form-control" id="new-client-address" placeholder="Adresse complète">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="new-client-phone" class="form-label">Téléphone</label>
+                                    <input type="text" class="form-control" id="new-client-phone" placeholder="Numéro de téléphone">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="new-client-email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="new-client-email" placeholder="Adresse email">
+                                </div>
+                                <button id="add-client" class="btn btn-primary mt-3">Ajouter le Client</button>
+                            </div>
+                        </div>
+                        
+                        <div class="client-list mt-4" id="client-list">
+                            <!-- Liste des clients -->
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Paramètres -->
-        <div class="tab-content" id="settings">
-            <div class="settings-section">
-                <h2 class="section-title">Paramètres</h2>
-                
-                <div class="settings-group">
-                    <h3>Informations de l'entreprise</h3>
-                    <div class="form-group">
-                        <label for="settings-company-name">Nom de l'entreprise</label>
-                        <input type="text" id="settings-company-name" value="NOVA STARTUP TECHNOLOGIE CI">
-                    </div>
-                    <div class="form-group">
-                        <label for="settings-company-address">Adresse</label>
-                        <input type="text" id="settings-company-address" value="Korhogo, Côte d'Ivoire">
-                    </div>
-                    <div class="form-group">
-                        <label for="settings-company-phone">Téléphone</label>
-                        <input type="text" id="settings-company-phone" value="+225 05 54 10 18 73">
-                    </div>
-                    <div class="form-group">
-                        <label for="settings-company-email">Email</label>
-                        <input type="email" id="settings-company-email" value="nstci@gmail.com">
-                    </div>
-                    <div class="form-group">
-                        <label for="settings-company-activities">Activités</label>
-                        <textarea id="settings-company-activities" rows="3">Création de sites web, développement de logiciels, Installation de systèmes vidéosurveillance, Formation</textarea>
+            
+            <!-- Modèles de documents -->
+            <div class="tab-pane fade" id="templates">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="section-title mb-4">Modèles de Documents</h2>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="template-name" class="form-label">Nom du modèle</label>
+                                    <input type="text" class="form-control" id="template-name" placeholder="Nom du modèle">
+                                </div>
+                                <button id="save-template" class="btn btn-primary">Sauvegarder comme modèle</button>
+                            </div>
+                        </div>
+                        
+                        <div class="template-list" id="template-list">
+                            <!-- Liste des modèles -->
+                        </div>
                     </div>
                 </div>
-                
-                <div class="settings-group">
-                    <h3>Préférences</h3>
-                    <div class="form-group">
-                        <label for="settings-currency">Devise</label>
-                        <select id="settings-currency">
-                            <option value="XOF" selected>Franc CFA (FCFA)</option>
-                            <option value="EUR">Euro (€)</option>
-                            <option value="USD">Dollar US ($)</option>
-                        </select>
+            </div>
+            
+            <!-- Paramètres -->
+            <div class="tab-pane fade" id="settings">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="section-title mb-4">Paramètres</h2>
+                        
+                        <div class="settings-group mb-4">
+                            <h3>Informations de l'entreprise</h3>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="settings-company-name" class="form-label">Nom de l'entreprise</label>
+                                        <input type="text" class="form-control" id="settings-company-name" value="NOVA STARTUP TECHNOLOGIE CI">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="settings-company-address" class="form-label">Adresse</label>
+                                        <input type="text" class="form-control" id="settings-company-address" value="Korhogo, Côte d'Ivoire">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="settings-company-phone" class="form-label">Téléphone</label>
+                                        <input type="text" class="form-control" id="settings-company-phone" value="+225 05 54 10 18 73">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="settings-company-email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="settings-company-email" value="nstci@gmail.com">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="settings-company-activities" class="form-label">Activités</label>
+                                <textarea class="form-control" id="settings-company-activities" rows="3">Création de sites web, développement de logiciels, Installation de systèmes vidéosurveillance, Formation</textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-group mb-4">
+                            <h3>Préférences</h3>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="settings-currency" class="form-label">Devise</label>
+                                        <select class="form-select" id="settings-currency">
+                                            <option value="XOF" selected>Franc CFA (FCFA)</option>
+                                            <option value="EUR">Euro (€)</option>
+                                            <option value="USD">Dollar US ($)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="settings-tva" class="form-label">Taux de TVA par défaut (%)</label>
+                                        <input type="number" class="form-control" id="settings-tva" value="18" min="0" max="100">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="settings-validity" class="form-label">Validité par défaut des devis (jours)</label>
+                                        <input type="number" class="form-control" id="settings-validity" value="30" min="1">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-group mb-4">
+                            <h3>Sauvegarde et Restauration</h3>
+                            <div class="backup-actions d-flex gap-2">
+                                <button id="export-data" class="btn btn-primary">Exporter les données</button>
+                                <button id="import-data" class="btn btn-warning">Importer des données</button>
+                                <input type="file" id="import-file" accept=".json" style="display: none;">
+                            </div>
+                        </div>
+                        
+                        <div class="settings-group">
+                            <h3>Sécurité</h3>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="change-password" class="form-label">Changer le mot de passe</label>
+                                        <input type="password" class="form-control" id="change-password" placeholder="Nouveau mot de passe">
+                                    </div>
+                                    <button id="save-password" class="btn btn-primary">Mettre à jour le mot de passe</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="settings-tva">Taux de TVA par défaut (%)</label>
-                        <input type="number" id="settings-tva" value="18" min="0" max="100">
-                    </div>
-                    <div class="form-group">
-                        <label for="settings-validity">Validité par défaut des devis (jours)</label>
-                        <input type="number" id="settings-validity" value="30" min="1">
-                    </div>
-                </div>
-                
-                <div class="settings-group">
-                    <h3>Sauvegarde et Restauration</h3>
-                    <div class="backup-actions">
-                        <button id="export-data" class="btn-primary">Exporter les données</button>
-                        <button id="import-data" class="btn-warning">Importer des données</button>
-                        <input type="file" id="import-file" accept=".json" style="display: none;">
-                    </div>
-                </div>
-                
-                <div class="settings-group">
-                    <h3>Sécurité</h3>
-                    <div class="form-group">
-                        <label for="change-password">Changer le mot de passe</label>
-                        <input type="password" id="change-password" placeholder="Nouveau mot de passe">
-                    </div>
-                    <button id="save-password" class="btn-primary">Mettre à jour le mot de passe</button>
                 </div>
             </div>
         </div>
@@ -1096,1049 +447,12 @@
 
     <!-- Notification -->
     <div class="notification" id="notification"></div>
+    <div id="invoice-print"></div>
 
-    <script>
-        // Informations de l'entreprise
-        const companyInfo = {
-            name: "NOVA STARTUP TECHNOLOGIE CI",
-            address: "Korhogo, Côte d'Ivoire",
-            phone: "+225 05 54 10 18 73",
-            email: "nstci@gmail.com",
-            activities: "Création de sites web, développement de logiciels, Installation de systèmes vidéosurveillance, Formation"
-        };
-
-        // Identifiants de connexion (en production, cela devrait être géré côté serveur)
-        const validCredentials = {
-            username: "admin",
-            password: "Nova2025"
-        };
-
-        // Éléments DOM
-        const loginContainer = document.getElementById('login-container');
-        const appContainer = document.getElementById('app-container');
-        const usernameInput = document.getElementById('username');
-        const passwordInput = document.getElementById('password');
-        const loginBtn = document.getElementById('login-btn');
-        const loginError = document.getElementById('login-error');
-        const logoutBtn = document.getElementById('logout-btn');
-        const userDisplay = document.getElementById('user-display');
-        const notification = document.getElementById('notification');
-        
-        const documentType = document.getElementById('document-type');
-        const clientSelect = document.getElementById('client-select');
-        const paymentSection = document.getElementById('payment-section');
-        const clientName = document.getElementById('client-name');
-        const clientAddress = document.getElementById('client-address');
-        const clientPhone = document.getElementById('client-phone');
-        const clientEmail = document.getElementById('client-email');
-        const productReference = document.getElementById('product-reference');
-        const productDescription = document.getElementById('product-description');
-        const productQuantity = document.getElementById('product-quantity');
-        const productPrice = document.getElementById('product-price');
-        const productTva = document.getElementById('product-tva');
-        const addProductBtn = document.getElementById('add-product');
-        const productsList = document.getElementById('products-list');
-        const validity = document.getElementById('validity');
-        const deliveryTime = document.getElementById('delivery-time');
-        const paymentTerms = document.getElementById('payment-terms');
-        const warranty = document.getElementById('warranty');
-        const qrData = document.getElementById('qr-data');
-        const saveBtn = document.getElementById('save-btn');
-        const resetBtn = document.getElementById('reset-btn');
-        const printBtn = document.getElementById('print-btn');
-        const pdfBtn = document.getElementById('pdf-btn');
-        const newDocBtn = document.getElementById('new-doc-btn');
-        const invoicePreview = document.getElementById('invoice-preview');
-        const paymentRef = document.getElementById('payment-ref');
-        
-        // Onglets
-        const navTabs = document.querySelectorAll('.nav-tab');
-        const tabContents = document.querySelectorAll('.tab-content');
-        
-        // Tableau de bord
-        const monthDocs = document.getElementById('month-docs');
-        const monthRevenue = document.getElementById('month-revenue');
-        const activeClients = document.getElementById('active-clients');
-        const conversionRate = document.getElementById('conversion-rate');
-        const recentDocuments = document.getElementById('recent-documents');
-        
-        // Gestion des clients
-        const newClientName = document.getElementById('new-client-name');
-        const newClientContact = document.getElementById('new-client-contact');
-        const newClientAddress = document.getElementById('new-client-address');
-        const newClientPhone = document.getElementById('new-client-phone');
-        const newClientEmail = document.getElementById('new-client-email');
-        const addClientBtn = document.getElementById('add-client');
-        const clientList = document.getElementById('client-list');
-        
-        // Modèles
-        const templateName = document.getElementById('template-name');
-        const saveTemplateBtn = document.getElementById('save-template');
-        const templateList = document.getElementById('template-list');
-        
-        // Paramètres
-        const settingsCompanyName = document.getElementById('settings-company-name');
-        const settingsCompanyAddress = document.getElementById('settings-company-address');
-        const settingsCompanyPhone = document.getElementById('settings-company-phone');
-        const settingsCompanyEmail = document.getElementById('settings-company-email');
-        const settingsCompanyActivities = document.getElementById('settings-company-activities');
-        const settingsCurrency = document.getElementById('settings-currency');
-        const settingsTva = document.getElementById('settings-tva');
-        const settingsValidity = document.getElementById('settings-validity');
-        const exportDataBtn = document.getElementById('export-data');
-        const importDataBtn = document.getElementById('import-data');
-        const importFile = document.getElementById('import-file');
-        const changePassword = document.getElementById('change-password');
-        const savePasswordBtn = document.getElementById('save-password');
-
-        // Données
-        let products = [];
-        let clients = [];
-        let templates = [];
-        let documents = [];
-        let isLoggedIn = false;
-        let settings = {
-            currency: 'XOF',
-            defaultTva: 18,
-            defaultValidity: 30
-        };
-
-        // Fonction pour afficher les notifications
-        function showNotification(message, type = 'info') {
-            notification.textContent = message;
-            notification.className = `notification ${type}`;
-            notification.style.display = 'block';
-            
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
-        }
-
-        // Fonction de connexion
-        function login() {
-            const username = usernameInput.value.trim();
-            const password = passwordInput.value;
-            
-            if (username === validCredentials.username && password === validCredentials.password) {
-                isLoggedIn = true;
-                loginContainer.style.display = 'none';
-                appContainer.style.display = 'block';
-                userDisplay.textContent = username;
-                
-                // Charger les données sauvegardées
-                loadFromLocalStorage();
-                updateDashboard();
-                
-                showNotification('Connexion réussie!', 'success');
-            } else {
-                loginError.style.display = 'block';
-                passwordInput.value = '';
-                showNotification('Identifiants incorrects', 'error');
-            }
-        }
-
-        // Fonction de déconnexion
-        function logout() {
-            isLoggedIn = false;
-            appContainer.style.display = 'none';
-            loginContainer.style.display = 'block';
-            usernameInput.value = '';
-            passwordInput.value = '';
-            loginError.style.display = 'none';
-            showNotification('Déconnexion réussie', 'info');
-        }
-
-        // Gestion des onglets
-        function switchTab(tabId) {
-            // Masquer tous les onglets
-            tabContents.forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Désactiver tous les onglets de navigation
-            navTabs.forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Activer l'onglet sélectionné
-            document.getElementById(tabId).classList.add('active');
-            
-            // Activer l'onglet de navigation correspondant
-            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
-        }
-
-        // Afficher/masquer la section paiement selon le type de document
-        function togglePaymentSection() {
-            if (documentType.value === 'paiement' || documentType.value === 'acompte') {
-                paymentSection.style.display = 'block';
-            } else {
-                paymentSection.style.display = 'none';
-            }
-            updateInvoicePreview();
-        }
-
-        // Charger les données depuis le localStorage
-        function loadFromLocalStorage() {
-            const savedData = localStorage.getItem('novaInvoiceData');
-            if (savedData) {
-                const data = JSON.parse(savedData);
-                
-                // Remplir les champs avec les données sauvegardées
-                documentType.value = data.documentType || 'devis';
-                clientName.value = data.clientName || '';
-                clientAddress.value = data.clientAddress || '';
-                clientPhone.value = data.clientPhone || '';
-                clientEmail.value = data.clientEmail || '';
-                validity.value = data.validity || settings.defaultValidity;
-                deliveryTime.value = data.deliveryTime || '';
-                paymentTerms.value = data.paymentTerms || '';
-                warranty.value = data.warranty || '';
-                qrData.value = data.qrData || 'NOVA STARTUP - 0554101873 - www.novastartup.ci';
-                
-                // Charger les produits
-                products = data.products || [];
-                updateProductsList();
-                
-                // Charger les clients
-                clients = data.clients || [];
-                updateClientSelect();
-                updateClientList();
-                
-                // Charger les modèles
-                templates = data.templates || [];
-                updateTemplateList();
-                
-                // Charger les documents
-                documents = data.documents || [];
-                
-                // Charger les paramètres
-                if (data.settings) {
-                    settings = data.settings;
-                    updateSettingsForm();
-                }
-                
-                // Mettre à jour l'affichage
-                togglePaymentSection();
-            } else {
-                // Valeurs par défaut
-                togglePaymentSection();
-            }
-        }
-
-        // Sauvegarder les données dans le localStorage
-        function saveToLocalStorage() {
-            const data = {
-                documentType: documentType.value,
-                clientName: clientName.value,
-                clientAddress: clientAddress.value,
-                clientPhone: clientPhone.value,
-                clientEmail: clientEmail.value,
-                validity: validity.value,
-                deliveryTime: deliveryTime.value,
-                paymentTerms: paymentTerms.value,
-                warranty: warranty.value,
-                qrData: qrData.value,
-                products: products,
-                clients: clients,
-                templates: templates,
-                documents: documents,
-                settings: settings
-            };
-            
-            localStorage.setItem('novaInvoiceData', JSON.stringify(data));
-            showNotification('Données sauvegardées avec succès!', 'success');
-        }
-
-        // Mettre à jour le formulaire des paramètres
-        function updateSettingsForm() {
-            settingsCompanyName.value = companyInfo.name;
-            settingsCompanyAddress.value = companyInfo.address;
-            settingsCompanyPhone.value = companyInfo.phone;
-            settingsCompanyEmail.value = companyInfo.email;
-            settingsCompanyActivities.value = companyInfo.activities;
-            
-            settingsCurrency.value = settings.currency;
-            settingsTva.value = settings.defaultTva;
-            settingsValidity.value = settings.defaultValidity;
-        }
-
-        // Mettre à jour le tableau de bord
-        function updateDashboard() {
-            const currentMonth = new Date().getMonth();
-            const currentYear = new Date().getFullYear();
-            
-            // Documents du mois
-            const monthDocuments = documents.filter(doc => {
-                const docDate = new Date(doc.date);
-                return docDate.getMonth() === currentMonth && docDate.getFullYear() === currentYear;
-            });
-            
-            monthDocs.textContent = monthDocuments.length;
-            
-            // Chiffre d'affaires du mois
-            const monthRevenueValue = monthDocuments.reduce((total, doc) => {
-                return total + doc.total;
-            }, 0);
-            
-            monthRevenue.textContent = formatCurrency(monthRevenueValue);
-            
-            // Clients actifs (ayant au moins un document dans les 3 derniers mois)
-            const threeMonthsAgo = new Date();
-            threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-            
-            const activeClientsCount = clients.filter(client => {
-                return documents.some(doc => 
-                    doc.clientName === client.name && new Date(doc.date) >= threeMonthsAgo
-                );
-            }).length;
-            
-            activeClients.textContent = activeClientsCount;
-            
-            // Taux de conversion (devis -> factures)
-            const quotes = documents.filter(doc => doc.type === 'devis');
-            const invoices = documents.filter(doc => doc.type === 'facture');
-            
-            const conversionRateValue = quotes.length > 0 ? 
-                Math.round((invoices.length / quotes.length) * 100) : 0;
-            
-            conversionRate.textContent = `${conversionRateValue}%`;
-            
-            // Documents récents (5 derniers)
-            const recentDocs = documents.slice(-5).reverse();
-            recentDocuments.innerHTML = '';
-            
-            if (recentDocs.length === 0) {
-                recentDocuments.innerHTML = '<p>Aucun document récent</p>';
-            } else {
-                recentDocs.forEach(doc => {
-                    const docElement = document.createElement('div');
-                    docElement.className = 'document-item';
-                    docElement.innerHTML = `
-                        <div>
-                            <strong>${doc.type.toUpperCase()} - ${doc.number}</strong><br>
-                            <small>${doc.clientName} - ${new Date(doc.date).toLocaleDateString('fr-FR')}</small>
-                        </div>
-                        <div>${formatCurrency(doc.total)}</div>
-                    `;
-                    recentDocuments.appendChild(docElement);
-                });
-            }
-        }
-
-        // Mettre à jour la liste des clients dans le select
-        function updateClientSelect() {
-            clientSelect.innerHTML = '<option value="">-- Nouveau client --</option>';
-            
-            clients.forEach(client => {
-                const option = document.createElement('option');
-                option.value = client.id;
-                option.textContent = client.name;
-                clientSelect.appendChild(option);
-            });
-        }
-
-        // Mettre à jour la liste des clients
-        function updateClientList() {
-            clientList.innerHTML = '';
-            
-            if (clients.length === 0) {
-                clientList.innerHTML = '<p>Aucun client enregistré</p>';
-            } else {
-                clients.forEach(client => {
-                    const clientElement = document.createElement('div');
-                    clientElement.className = 'client-item';
-                    clientElement.innerHTML = `
-                        <div>
-                            <strong>${client.name}</strong><br>
-                            <small>${client.contact} - ${client.phone}</small>
-                        </div>
-                        <div>
-                            <button class="btn-primary use-client" data-id="${client.id}">Utiliser</button>
-                            <button class="btn-danger delete-client" data-id="${client.id}">Supprimer</button>
-                        </div>
-                    `;
-                    clientList.appendChild(clientElement);
-                });
-                
-                // Ajouter les écouteurs d'événements
-                document.querySelectorAll('.use-client').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const clientId = this.getAttribute('data-id');
-                        const client = clients.find(c => c.id == clientId);
-                        
-                        if (client) {
-                            clientName.value = client.name;
-                            clientAddress.value = client.address;
-                            clientPhone.value = client.phone;
-                            clientEmail.value = client.email;
-                            
-                            switchTab('invoice');
-                            updateInvoicePreview();
-                        }
-                    });
-                });
-                
-                document.querySelectorAll('.delete-client').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const clientId = this.getAttribute('data-id');
-                        
-                        if (confirm('Êtes-vous sûr de vouloir supprimer ce client ?')) {
-                            clients = clients.filter(c => c.id != clientId);
-                            updateClientSelect();
-                            updateClientList();
-                            saveToLocalStorage();
-                        }
-                    });
-                });
-            }
-        }
-
-        // Mettre à jour la liste des modèles
-        function updateTemplateList() {
-            templateList.innerHTML = '';
-            
-            if (templates.length === 0) {
-                templateList.innerHTML = '<p>Aucun modèle enregistré</p>';
-            } else {
-                templates.forEach(template => {
-                    const templateElement = document.createElement('div');
-                    templateElement.className = 'template-item';
-                    templateElement.innerHTML = `
-                        <div>
-                            <strong>${template.name}</strong><br>
-                            <small>${template.products.length} produit(s) - Créé le ${new Date(template.date).toLocaleDateString('fr-FR')}</small>
-                        </div>
-                    `;
-                    
-                    templateElement.addEventListener('click', function() {
-                        // Charger le modèle
-                        products = [...template.products];
-                        updateProductsList();
-                        updateInvoicePreview();
-                        switchTab('invoice');
-                    });
-                    
-                    templateList.appendChild(templateElement);
-                });
-            }
-        }
-
-        // Ajouter un produit
-        function addProduct() {
-            const reference = productReference.value.trim();
-            const description = productDescription.value.trim();
-            const quantity = parseInt(productQuantity.value);
-            const price = parseFloat(productPrice.value);
-            const tva = parseFloat(productTva.value);
-            
-            if (!reference || !description || quantity <= 0 || price < 0) {
-                alert('Veuillez remplir tous les champs du produit correctement');
-                return;
-            }
-            
-            products.push({
-                id: Date.now(),
-                reference,
-                description,
-                quantity,
-                price,
-                tva
-            });
-            
-            // Réinitialiser les champs
-            productReference.value = '';
-            productDescription.value = '';
-            productQuantity.value = '1';
-            productPrice.value = '0';
-            productTva.value = settings.defaultTva.toString();
-            
-            updateProductsList();
-            updateInvoicePreview();
-        }
-
-        // Supprimer un produit
-        function removeProduct(id) {
-            products = products.filter(product => product.id !== id);
-            updateProductsList();
-            updateInvoicePreview();
-        }
-
-        // Mettre à jour la liste des produits
-        function updateProductsList() {
-            if (products.length === 0) {
-                productsList.innerHTML = '<div class="empty-products">Aucun produit ajouté</div>';
-                return;
-            }
-            
-            productsList.innerHTML = '';
-            
-            products.forEach(product => {
-                const productElement = document.createElement('div');
-                productElement.className = 'product-item';
-                productElement.innerHTML = `
-                    <div><strong>${product.reference}</strong>: ${product.description}</div>
-                    <div>Qté: ${product.quantity}</div>
-                    <div>Prix: ${formatCurrency(product.price)}</div>
-                    <div>Total: ${formatCurrency(product.quantity * product.price)}</div>
-                    <button class="btn-danger" data-id="${product.id}">Supprimer</button>
-                `;
-                
-                // Ajouter l'écouteur d'événement pour le bouton supprimer
-                const deleteBtn = productElement.querySelector('button');
-                deleteBtn.addEventListener('click', function() {
-                    removeProduct(product.id);
-                });
-                
-                productsList.appendChild(productElement);
-            });
-        }
-
-        // Formater les montants en CFA
-        function formatCurrency(amount) {
-            if (settings.currency === 'XOF') {
-                return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'XOF' }).format(amount);
-            } else if (settings.currency === 'EUR') {
-                return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(amount);
-            } else {
-                return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
-            }
-        }
-
-        // Calculer les totaux
-        function calculateTotals() {
-            let subtotal = 0;
-            let totalTVA = 0;
-            
-            products.forEach(product => {
-                const productTotal = product.quantity * product.price;
-                subtotal += productTotal;
-                totalTVA += productTotal * (product.tva / 100);
-            });
-            
-            const total = subtotal + totalTVA;
-            
-            return { subtotal, totalTVA, total };
-        }
-
-        // Générer le QR code
-        function generateQRCode() {
-            const qrContainer = document.getElementById('qr-code');
-            if (qrContainer) {
-                qrContainer.innerHTML = '';
-                const data = qrData.value || 'NOVA STARTUP - 0554101873';
-                if (data) {
-                    new QRCode(qrContainer, {
-                        text: data,
-                        width: 100,
-                        height: 100,
-                        colorDark: "#000000",
-                        colorLight: "#ffffff",
-                        correctLevel: QRCode.CorrectLevel.H
-                    });
-                } else {
-                    qrContainer.innerHTML = '<div>Information manquante</div>';
-                }
-            }
-        }
-
-        // Mettre à jour l'affichage de la facture
-        function updateInvoicePreview() {
-            const documentTitles = {
-                'devis': 'DEVIS',
-                'facture': 'FACTURE',
-                'paiement': 'REÇU DE PAIEMENT',
-                'acompte': 'FACTURE D\'ACOMPTE'
-            };
-            
-            const today = new Date();
-            const validityDate = new Date();
-            validityDate.setDate(today.getDate() + parseInt(validity.value));
-            
-            const { subtotal, totalTVA, total } = calculateTotals();
-            
-            // Obtenir le mode de paiement sélectionné
-            const paymentMethod = document.querySelector('input[name="payment-method"]:checked')?.value || '';
-            
-            // Générer les lignes de produits
-            let productsHTML = '';
-            products.forEach(product => {
-                const productTotal = product.quantity * product.price;
-                const productTVA = productTotal * (product.tva / 100);
-                
-                productsHTML += `
-                    <tr>
-                        <td class="description">
-                            <strong>${product.reference}</strong><br>
-                            ${product.description}
-                        </td>
-                        <td class="quantity">${product.quantity}</td>
-                        <td class="unit-price">${formatCurrency(product.price)}</td>
-                        <td class="total">${formatCurrency(productTotal)}</td>
-                    </tr>
-                    ${product.tva > 0 ? `
-                    <tr>
-                        <td colspan="3" style="text-align: right; padding-right: 15px;">TVA (${product.tva}%)</td>
-                        <td class="total">${formatCurrency(productTVA)}</td>
-                    </tr>
-                    ` : ''}
-                `;
-            });
-            
-            // HTML pour la section paiement si nécessaire
-            let paymentHTML = '';
-            if (documentType.value === 'paiement' || documentType.value === 'acompte') {
-                paymentHTML = `
-                    <div class="invoice-section">
-                        <div class="invoice-section-title">INFORMATIONS DE PAIEMENT</div>
-                        <p><strong>Référence:</strong> ${paymentRef.value || 'Non spécifiée'}</p>
-                        <p><strong>Mode de paiement:</strong> ${paymentMethod}</p>
-                        <p><strong>Montant payé:</strong> ${formatCurrency(total)}</p>
-                        <p><strong>Date du paiement:</strong> ${today.toLocaleDateString('fr-FR')}</p>
-                    </div>
-                `;
-            }
-            
-            invoicePreview.innerHTML = `
-                <div class="invoice-header">
-                    <div class="company-info">
-                        <h1>${companyInfo.name}</h1>
-                        <p>${companyInfo.address}</p>
-                        <p>Tél: ${companyInfo.phone}</p>
-                        <p>Email: ${companyInfo.email}</p>
-                        <p>${companyInfo.activities}</p>
-                    </div>
-                    
-                    <div class="document-info">
-                        <h2>${documentTitles[documentType.value]}</h2>
-                        <p>N°: <span id="invoice-number">${documentType.value.toUpperCase()}-${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}</span></p>
-                        <p>Date: <span id="invoice-date">${today.toLocaleDateString('fr-FR')}</span></p>
-                    </div>
-                </div>
-                
-                <div class="invoice-section">
-                    <div class="invoice-section-title">INFORMATIONS CLIENT</div>
-                    <div class="client-info">
-                        <p><strong>Nom/Raison sociale:</strong> ${clientName.value}</p>
-                        <p><strong>Adresse:</strong> ${clientAddress.value}</p>
-                        <p><strong>Téléphone:</strong> ${clientPhone.value}</p>
-                        <p><strong>Email:</strong> ${clientEmail.value}</p>
-                    </div>
-                </div>
-                
-                ${paymentHTML}
-                
-                <div class="invoice-section">
-                    <div class="invoice-section-title">DESCRIPTION DES ARTICLES</div>
-                    <table class="items-table">
-                        <thead>
-                            <tr>
-                                <th class="description">Désignation</th>
-                                <th class="quantity">Quantité</th>
-                                <th class="unit-price">Prix Unitaire</th>
-                                <th class="total">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${productsHTML || '<tr><td colspan="4" style="text-align: center;">Aucun produit ajouté</td></tr>'}
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="invoice-section">
-                    <div class="totals">
-                        <div class="total-row">
-                            <span>Sous-total:</span>
-                            <span id="subtotal">${formatCurrency(subtotal)}</span>
-                        </div>
-                        <div class="total-row">
-                            <span>Total TVA:</span>
-                            <span id="vat-amount">${formatCurrency(totalTVA)}</span>
-                        </div>
-                        <div class="total-row final">
-                            <span>TOTAL TTC:</span>
-                            <span id="total-ttc">${formatCurrency(total)}</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="invoice-section conditions">
-                    <div class="invoice-section-title">CONDITIONS</div>
-                    <p><strong>Validité de l'offre:</strong> ${validity.value} jours (jusqu'au ${validityDate.toLocaleDateString('fr-FR')})</p>
-                    <p><strong>Délai de livraison/installation:</strong> ${deliveryTime.value}</p>
-                    <p><strong>Conditions de paiement:</strong> ${paymentTerms.value}</p>
-                    <p><strong>Garantie:</strong> ${warranty.value}</p>
-                </div>
-                
-                <div class="signature-area">
-                    <div>
-                        <p>Fait à Korhogo, le ${today.toLocaleDateString('fr-FR')}</p>
-                        <p style="margin-top: 50px;">Le Responsable</p>
-                    </div>
-                    <div>
-                        <div id="qr-code" class="qr-code">
-                            <!-- QR Code sera généré ici -->
-                        </div>
-                        <p style="text-align: center; margin-top: 5px; font-size: 12px;">Signature numérique</p>
-                    </div>
-                </div>
-            `;
-            
-            // Générer le QR code après avoir mis à jour l'affichage
-            setTimeout(generateQRCode, 100);
-        }
-
-        // Sauvegarder le document
-        function saveDocument() {
-            if (products.length === 0) {
-                alert('Veuillez ajouter au moins un produit avant de sauvegarder');
-                return;
-            }
-            
-            const today = new Date();
-            const documentNumber = `${documentType.value.toUpperCase()}-${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}-${String(documents.length + 1).padStart(3, '0')}`;
-            
-            const { total } = calculateTotals();
-            
-            const document = {
-                id: Date.now(),
-                type: documentType.value,
-                number: documentNumber,
-                date: today.toISOString(),
-                clientName: clientName.value,
-                clientAddress: clientAddress.value,
-                clientPhone: clientPhone.value,
-                clientEmail: clientEmail.value,
-                products: [...products],
-                subtotal: calculateTotals().subtotal,
-                tva: calculateTotals().totalTVA,
-                total: total,
-                validity: validity.value,
-                deliveryTime: deliveryTime.value,
-                paymentTerms: paymentTerms.value,
-                warranty: warranty.value
-            };
-            
-            documents.push(document);
-            saveToLocalStorage();
-            updateDashboard();
-            
-            // Si le client n'existe pas encore, l'ajouter
-            if (clientName.value && !clients.some(c => c.name === clientName.value)) {
-                addClientFromForm();
-            }
-        }
-
-        // Ajouter un client à partir du formulaire
-        function addClientFromForm() {
-            if (!clientName.value.trim()) return;
-            
-            const client = {
-                id: Date.now(),
-                name: clientName.value,
-                contact: clientName.value, // Par défaut, même que le nom
-                address: clientAddress.value,
-                phone: clientPhone.value,
-                email: clientEmail.value
-            };
-            
-            clients.push(client);
-            updateClientSelect();
-            updateClientList();
-            saveToLocalStorage();
-        }
-
-        // Ajouter un client via le formulaire dédié
-        function addClient() {
-            if (!newClientName.value.trim()) {
-                alert('Veuillez saisir au moins un nom pour le client');
-                return;
-            }
-            
-            const client = {
-                id: Date.now(),
-                name: newClientName.value,
-                contact: newClientContact.value || newClientName.value,
-                address: newClientAddress.value,
-                phone: newClientPhone.value,
-                email: newClientEmail.value
-            };
-            
-            clients.push(client);
-            updateClientSelect();
-            updateClientList();
-            saveToLocalStorage();
-            
-            // Réinitialiser le formulaire
-            newClientName.value = '';
-            newClientContact.value = '';
-            newClientAddress.value = '';
-            newClientPhone.value = '';
-            newClientEmail.value = '';
-            
-            showNotification('Client ajouté avec succès!', 'success');
-        }
-
-        // Sauvegarder un modèle
-        function saveTemplate() {
-            if (products.length === 0) {
-                alert('Veuillez ajouter au moins un produit avant de sauvegarder comme modèle');
-                return;
-            }
-            
-            if (!templateName.value.trim()) {
-                alert('Veuillez donner un nom à votre modèle');
-                return;
-            }
-            
-            const template = {
-                id: Date.now(),
-                name: templateName.value,
-                date: new Date().toISOString(),
-                products: [...products]
-            };
-            
-            templates.push(template);
-            updateTemplateList();
-            saveToLocalStorage();
-            
-            templateName.value = '';
-            showNotification('Modèle sauvegardé avec succès!', 'success');
-        }
-
-        // Réinitialiser le formulaire
-        function resetForm() {
-            if (confirm("Voulez-vous vraiment réinitialiser toutes les données ?")) {
-                // Réinitialiser les champs
-                documentType.value = 'devis';
-                clientName.value = '';
-                clientAddress.value = '';
-                clientPhone.value = '';
-                clientEmail.value = '';
-                validity.value = settings.defaultValidity;
-                deliveryTime.value = 'Sous 15 jours ouvrables';
-                paymentTerms.value = '30% à la commande, solde à la livraison';
-                warranty.value = '12 mois pièces et main d\'œuvre';
-                qrData.value = 'NOVA STARTUP - 0554101873 - www.novastartup.ci';
-                paymentRef.value = '';
-                
-                // Réinitialiser les produits
-                products = [];
-                updateProductsList();
-                updateInvoicePreview();
-                togglePaymentSection();
-            }
-        }
-
-        // Nouveau document
-        function newDocument() {
-            if (confirm("Voulez-vous créer un nouveau document ? Les données non sauvegardées seront perdues.")) {
-                resetForm();
-            }
-        }
-
-        // Imprimer la facture
-        function printInvoice() {
-            window.print();
-        }
-
-        // Générer un PDF
-       /* function generatePDF() {
-            // Utiliser html2canvas pour capturer la facture
-            html2canvas(document.getElementById('invoice-preview')).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                
-                const imgWidth = 210; // A4 width in mm
-                const pageHeight = 295; // A4 height in mm
-                const imgHeight = canvas.height * imgWidth / canvas.width;
-                let heightLeft = imgHeight;
-                
-                let position = 0;
-                
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-                
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                }
-                
-                pdf.save(`${documentType.value}-${new Date().toISOString().slice(0, 10)}.pdf`);
-                showNotification('PDF généré avec succès!', 'success');
-            });
-        }
-*/
-
-
-
-
-function generatePDF() {
-    updatePrintContainer();
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     
-    // Forcer l'affichage temporaire pour la capture
-    const printContainer = document.getElementById('invoice-print');
-    const originalDisplay = printContainer.style.display;
-    printContainer.style.display = 'block';
-    printContainer.style.position = 'absolute';
-    printContainer.style.left = '0';
-    printContainer.style.top = '0';
-    printContainer.style.zIndex = '9999';
-    
-    setTimeout(() => {
-        html2canvas(printContainer, {
-            scale: 2, // Augmente la qualité
-            useCORS: true,
-            logging: false,
-            width: 794, // 210mm en pixels (210 * 3.78)
-            height: 1123, // 297mm en pixels (297 * 3.78)
-            windowWidth: 794,
-            windowHeight: 1123
-        }).then(canvas => {
-            // Restaurer l'affichage original
-            printContainer.style.display = originalDisplay;
-            printContainer.style.position = '';
-            printContainer.style.left = '';
-            printContainer.style.top = '';
-            printContainer.style.zIndex = '';
-            
-            const imgData = canvas.toDataURL('image/png');
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            
-            // Dimensions A4 exactes
-            const imgWidth = 210;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            
-            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-            pdf.save(`${documentType.value}-${new Date().toISOString().slice(0, 10)}.pdf`);
-            showNotification('PDF généré avec succès!', 'success');
-        });
-    }, 500);
-}
-
-        
-
-        // Exporter les données
-        function exportData() {
-            const data = {
-                clients: clients,
-                templates: templates,
-                documents: documents,
-                settings: settings,
-                exportDate: new Date().toISOString()
-            };
-            
-            const dataStr = JSON.stringify(data, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(dataBlob);
-            link.download = `nova-startup-backup-${new Date().toISOString().slice(0, 10)}.json`;
-            link.click();
-            
-            showNotification('Données exportées avec succès!', 'success');
-        }
-
-        // Importer des données
-        function importData() {
-            importFile.click();
-        }
-
-        // Changer le mot de passe
-        function changePasswordFunc() {
-            const newPassword = changePassword.value.trim();
-            
-            if (newPassword.length < 6) {
-                alert('Le mot de passe doit contenir au moins 6 caractères');
-                return;
-            }
-            
-            validCredentials.password = newPassword;
-            changePassword.value = '';
-            showNotification('Mot de passe mis à jour avec succès!', 'success');
-        }
-
-        // Initialisation
-        document.addEventListener('DOMContentLoaded', function() {
-            // Ajouter les écouteurs d'événements
-            loginBtn.addEventListener('click', login);
-            logoutBtn.addEventListener('click', logout);
-            
-            // Navigation par onglets
-            navTabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabId = this.getAttribute('data-tab');
-                    switchTab(tabId);
-                });
-            });
-            
-            documentType.addEventListener('change', togglePaymentSection);
-            addProductBtn.addEventListener('click', addProduct);
-            saveBtn.addEventListener('click', saveDocument);
-            resetBtn.addEventListener('click', resetForm);
-            printBtn.addEventListener('click', printInvoice);
-            pdfBtn.addEventListener('click', generatePDF);
-            newDocBtn.addEventListener('click', newDocument);
-            
-            // Gestion des clients
-            addClientBtn.addEventListener('click', addClient);
-            
-            // Modèles
-            saveTemplateBtn.addEventListener('click', saveTemplate);
-            
-            // Paramètres
-            exportDataBtn.addEventListener('click', exportData);
-            importDataBtn.addEventListener('click', importData);
-            importFile.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        try {
-                            const data = JSON.parse(e.target.result);
-                            
-                            if (data.clients) clients = data.clients;
-                            if (data.templates) templates = data.templates;
-                            if (data.documents) documents = data.documents;
-                            if (data.settings) settings = data.settings;
-                            
-                            updateClientSelect();
-                            updateClientList();
-                            updateTemplateList();
-                            updateSettingsForm();
-                            saveToLocalStorage();
-                            updateDashboard();
-                            
-                            showNotification('Données importées avec succès!', 'success');
-                        } catch (err) {
-                            alert('Erreur lors de l\'importation des données: ' + err.message);
-                        }
-                    };
-                    reader.readAsText(file);
-                }
-            });
-            
-            savePasswordBtn.addEventListener('click', changePasswordFunc);
-            
-            // Permettre la connexion avec la touche Entrée
-            passwordInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    login();
-                }
-            });
-            
-            // Mettre à jour l'affichage quand les champs changent
-            const inputs = document.querySelectorAll('input, select, textarea');
-            inputs.forEach(input => {
-                input.addEventListener('input', updateInvoicePreview);
-            });
-            
-            // Mettre à jour l'affichage initial
-            updateInvoicePreview();
-        });
-    </script>
+    <!-- Script personnalisé -->
+    <script src="script.js"></script>
 </body>
 </html>
