@@ -824,37 +824,42 @@ function printInvoice() {
     window.print();
 }
 
-// Générer un PDF (version simplifiée)
-function generatePDF() {
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    
-    // Capturer directement la prévisualisation
-    html2canvas(document.getElementById('invoice-preview'), {
-        scale: 2,
-        useCORS: true,
-        logging: false
-    }).then(canvas => {
-        const imgData = canvas.toDataURL('image/png');
-        
-        // Dimensions
-        const imgWidth = 210; // A4 width in mm
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        
-        // Ajouter l'image au PDF
-        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-        
-        // Sauvegarder
-        const today = new Date();
-        const fileName = `${documentType.value}-${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}.pdf`;
-        pdf.save(fileName);
-        
-        showNotification('PDF généré avec succès!', 'success');
-    }).catch(error => {
-        console.error('Erreur lors de la génération du PDF:', error);
-        showNotification('Erreur lors de la génération du PDF', 'error');
-    });
-}
+
+
+
+
+
+
+
+
+
+// === PDF ===
+document.getElementById("pdf-btn").addEventListener("click", async () => {
+    const preview = document.getElementById("invoice-preview");
+    if (!preview.innerHTML.trim()) {
+        alert("Veuillez d'abord générer une facture avant d'exporter en PDF !");
+        return;
+    }
+
+    try {
+        const canvas = await html2canvas(preview, { scale: 2, useCORS: true });
+        const imgData = canvas.toDataURL("image/png");
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF("p", "mm", "a4");
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`document_${Date.now()}.pdf`);
+        showNotification("PDF généré avec succès !");
+    } catch (error) {
+        console.error(error);
+        alert("Erreur lors de la génération du PDF.");
+    }
+});
+
+
 
 // Exporter les données
 function exportData() {
